@@ -1,29 +1,93 @@
 <template>
-  <div
-    @wheel.prevent="handleMouseWheel"
-    @mousedown.prevent="startPan"
-    @mousemove="pan"
-    @mouseup="stopPan">
-    <highchart
-      :style="{ transform: `scale(${zoom}) translate(${panX}px, ${panY}px)` }"
-      :options="chartOptions"
-      :modules="[chartData.chart.type]"></highchart>
+  <div>
+    <!-- Select Dropdown -->
+    <label for='fromSelect'>Select Plugin</label>
+    <select id='fromSelect' v-model='selectedFromValue'>
+      <option value=''>All</option>
+      <option
+        v-for='fromValue in uniqueFromValues'
+        :key='fromValue'
+        :value='fromValue'>
+        {{ fromValue }}
+      </option>
+    </select>
+
+    <!-- Highcharts Network Graph -->
+    <div
+      @wheel.prevent='handleMouseWheel'
+      @mousedown.prevent='startPan'
+      @mousemove='pan'
+      @mouseup='stopPan'>
+      <highchart
+        :style='{ transform: `scale(${zoom}) translate(${panX}px, ${panY}px)` }'
+        :options='chartOptions'
+        :modules='[chartData.chart.type]'></highchart>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-
-const props = defineProps(["chartData"]);
+import { ref, computed } from 'vue';
+const props = defineProps(['chartData']);
 const zoom = ref(1);
 const isPanning = ref(false);
 const panStartX = ref(0);
 const panStartY = ref(0);
 const panX = ref(0);
 const panY = ref(0);
+const selectedFromValue = ref('');
+
+// Get the unique 'from' values from the data
+const uniqueFromValues = computed(() => {
+  const fromValues = new Set();
+  props.chartData.series[0].data.forEach((item) => {
+    fromValues.add(item[0]);
+  });
+  return Array.from(fromValues);
+});
+
+// Filter the data based on the selected 'from' value
+const filteredChartOptions = computed(() => {
+  if (!selectedFromValue.value) {
+    return props.chartData.series[0].data;
+  } else {
+    // Filter data based on the selected 'from' value
+    const filteredSeries = props.chartData.series[0].data.filter(
+      (item) => item[0] === selectedFromValue.value
+    );
+    return filteredSeries;
+  }
+});
+
+const filteredNodes = computed(() => {
+  if (!selectedFromValue.value) {
+    return props.chartData.series[0].nodes;
+  } else {
+    return []
+  }
+})
+
+const filteredHeight = computed(() => {
+  if (!selectedFromValue.value) {
+    return '100%'
+  } else {
+    return '30%'
+  }
+})
+const filteredLength = computed(() => {
+  if (!selectedFromValue.value) {
+    return props.chartData.linkLength
+  } else {
+    return 20
+  }
+})
 
 const chartOptions = ref({
-  chart: props.chartData.chart,
+  chart: {
+    type: 'networkgraph',
+    marginTop: 20,
+    height: filteredHeight
+  },
   title: props.chartData.title,
   subtitle: props.chartData.subtitle,
 
@@ -32,7 +96,7 @@ const chartOptions = ref({
       keys: props.chartData.keys,
       layoutAlgorithm: {
         enableSimulation: props.chartData.enableSimulation,
-        linkLength: props.chartData.linkLength,
+        linkLength: filteredLength,
         friction: props.chartData.friction,
 
         initialPositions: function () {
@@ -55,6 +119,20 @@ const chartOptions = ref({
   },
 
   series: props.chartData.series,
+  series: [
+    {
+      dataLabels: {
+        enabled: true,
+        linkFormat: '',
+        style: {
+          fontSize: '0.8em',
+          fontWeight: 'normal',
+        },
+      },
+      nodes: filteredNodes,
+      data: filteredChartOptions,
+    },
+  ],
 });
 
 const handleMouseWheel = (event) => {
