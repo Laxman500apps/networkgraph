@@ -1,7 +1,7 @@
 {
   "chart": {
     "type": "networkgraph",
-    "marginTop": 80,
+    "marginTop": 20,
     "height": "100%"
   },
   "title": {
