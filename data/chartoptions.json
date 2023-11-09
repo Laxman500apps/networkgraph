@@ -317,6 +317,16 @@
         { "id": "feedback-frontend-plugin-modal", "color": "#4682B4" },
         { "id": "feedback-frontend-plugin-toaster", "color": "#4682B4" },
         {
+          "id": "frontend-plugin-roles",
+          "marker": {
+            "radius": 7
+          },
+          "color": "#8B4513"
+        },
+        { "id": "roles-frontend-plugin-auth", "color": "8B4513" },
+        { "id": "roles-frontend-plugin-crud-basic", "color": "8B4513" },
+        { "id": "roles-frontend-plugin-show-alert", "color": "8B4513" },
+        {
           "id": "frontend-plugin-email-component",
           "marker": {
             "radius": 7
@@ -512,7 +522,7 @@
         { "id": "domain-services-frontend-plugin-toaster", "color": "#DC143C" },
 
         {
-          "id": "frontend-plugin-domain-services",
+          "id": "frontend-plugin-profile-picker",
           "marker": {
             "radius": 7
           },
