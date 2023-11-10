@@ -392,7 +392,7 @@
         { "id": "quill-frontend-plugin-toaster", "color": "#8B0000" },
 
         {
-          "id": "frontend-plugin-global-search",
+          "id": "frontend-plugin-maps",
           "marker": {
             "radius": 7
           },
