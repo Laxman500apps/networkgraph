@@ -8,7 +8,7 @@
       :items="uniqueFromValues"
       variant="outlined"></v-select>
 
-    <!-- Showing Loader -->
+    <!-- Loader -->
     <div v-if="isLoading" class="loader"></div>
 
     <!-- Highcharts Network Graph -->
